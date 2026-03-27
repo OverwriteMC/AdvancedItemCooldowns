@@ -32,4 +32,10 @@ public final class ItemCooldowns extends JavaPlugin {
     public boolean hasPvpProvider() {
         return pvpChecker != null;
     }
+
+    @Override
+    public void onDisable() {
+        getServer().getScheduler().cancelTasks(this);
+    }
+
 }

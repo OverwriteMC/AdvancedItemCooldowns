@@ -52,7 +52,6 @@ public final class CooldownManager {
             }
             List<World> activeWorlds = Utils.getWorldList(groupSection.getStringList("active_worlds"));
             Set<Material> items = Utils.createMaterialSet(groupSection.getStringList("items"));
-            plugin.getLogger().info("Items: " + items);
             if (items.isEmpty()) {
                 plugin.getLogger().warning("Нет предметов в группе. Пропускаем группу " + groupId);
                 continue;
@@ -66,7 +65,7 @@ public final class CooldownManager {
             boolean ignoreCooldown = groupSection.getBoolean("ignore_cooldown", true);
             boolean applyToAll = groupSection.getBoolean("apply_to_all", false);
             boolean applyOnlyInPvp = plugin.hasPvpProvider() && groupSection.getBoolean("apply_only_in_pvp", false);
-            cooldownGroups.add(
+            cooldownGroupsBuilder.add(
                     new CooldownGroup(
                             groupId,
                             workFactors,
@@ -113,10 +112,7 @@ public final class CooldownManager {
         if (group.ignoreCooldown() && player.hasCooldown(material)) {
             return false;
         }
-        if (isPotion(material) && !potionMatches(item, group.baseEffects(), group.potionEffects())) {
-            return false;
-        }
-        return true;
+        return !isPotion(material) || potionMatches(item, group.baseEffects(), group.potionEffects());
     }
 
     private void applyCooldown(Player player, ItemStack item, CooldownGroup group) {
@@ -148,7 +144,7 @@ public final class CooldownManager {
                 return true;
             }
         }
-        if (allowedCustomEffects.isEmpty()) {
+        if (!allowedCustomEffects.isEmpty()) {
             for (PotionEffect potionEffect : meta.getCustomEffects()) {
                 if (allowedCustomEffects.contains(potionEffect.getType())) {
                     return true;
