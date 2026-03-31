@@ -29,6 +29,9 @@ public final class CooldownListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onInteract(PlayerInteractEvent event) {
         Player p = event.getPlayer();
+        if (p.hasPermission("itemcooldowns.bypass")) {
+            return;
+        }
         PlayerInventory pInv = p.getInventory();
         WorkFactor factor = WorkFactor.fromAction(event.getAction());
         if (factor == null) {
@@ -41,6 +44,9 @@ public final class CooldownListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onInteractEntity(PlayerInteractEntityEvent event) {
         Player p = event.getPlayer();
+        if (p.hasPermission("itemcooldowns.bypass")) {
+            return;
+        }
         PlayerInventory inventory = p.getInventory();
         ItemStack mainHandItem = inventory.getItemInMainHand();
         ItemStack offHandItem = inventory.getItemInOffHand();

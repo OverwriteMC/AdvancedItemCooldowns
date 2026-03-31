@@ -21,6 +21,9 @@ public final class ItemCooldowns extends JavaPlugin {
         pluginManager.registerEvents(new CooldownListener(this), this);
         getServer().getScheduler().runTaskAsynchronously(this, () -> cooldownManager.setupCooldownGroups());
         getCommand("advanceditemcooldowns").setExecutor((sender, command, label, args) -> {
+            if (sender.hasPermission("itemcooldowns.admin")) {
+                return true;
+            }
             reloadConfig();
             cooldownManager.setupCooldownGroups();
             sender.sendMessage("§aУспешно перезагружено!");
